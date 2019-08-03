@@ -17,50 +17,23 @@ app.post("/", (req, res) => {
 
   nexmo.message.sendSms(from, to, text, (err, responseData) => {
     if (err) {
-      console.log(err);
+      res.send({
+        status: "error",
+        message: err,
+        data: []
+      });
     } else {
       if (responseData.messages[0]["status"] === "0") {
         res.send({
           status: "success",
-          data: [],
-          err: null
+          message: `Succes Send SMS to ${to}`,
+          data: responseData.messages
         });
       } else {
         res.send({
           status: "error",
-          data: [],
-          err: responseData.messages[0]["error-text"]
-        });
-      }
-    }
-  });
-});
-
-app.post("/edo", (req, res) => {
-  const nexmo = new Nexmo({
-    apiKey: "b0040e97",
-    apiSecret: "SS7MO2kKHfUCsm2d"
-  });
-
-  const from = "6282279266979";
-  const to = req.body.to;
-  const text = req.body.text;
-
-  nexmo.message.sendSms(from, to, text, (err, responseData) => {
-    if (err) {
-      console.log(err);
-    } else {
-      if (responseData.messages[0]["status"] === "0") {
-        res.send({
-          status: "success",
-          data: [],
-          err: null
-        });
-      } else {
-        res.send({
-          status: "error",
-          data: [],
-          err: responseData.messages[0]["error-text"]
+          message: responseData.messages[0]["error-text"],
+          data: []
         });
       }
     }
